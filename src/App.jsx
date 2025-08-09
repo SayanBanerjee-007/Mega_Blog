@@ -5,34 +5,43 @@ import { useEffect } from 'react'
 import { login, logout } from './store/authSlice'
 import { Header, Footer } from './components'
 import { Outlet } from 'react-router-dom'
+import { ThemeProvider } from './contexts/ThemeContext'
 
 function App() {
-  const [loading, setLoading] = useState(true)
-  const dispatch = useDispatch()
+	const dispatch = useDispatch()
 
-  useEffect(() => {
-    authService
-      .getCurrentUser()
-      .then(userData => {
-        if (userData) {
-          dispatch(login({ userData }))
-        } else {
-          dispatch(logout())
-        }
-      })
-      .finally(() => {
-        setLoading(false)
-      })
-  }, [])
-  return !loading ? (
-    <div className="min-h-screen bg-gray-500 flex flex-col justify-between">
-      <Header />
-      <main>
-        <Outlet />
-      </main>
-      <Footer />
-    </div>
-  ) : null
+	useEffect(() => {
+		authService.getCurrentUser().then(userData => {
+			if (userData) {
+				dispatch(login({ userData }))
+			} else {
+				dispatch(logout())
+			}
+		})
+	}, [])
+
+	return (
+		<ThemeProvider>
+			<div className="main-container">
+				<div className="bg-decoration">
+					<div className="bg-blob-1"></div>
+					<div className="bg-blob-2"></div>
+				</div>
+
+				<div className="content-wrapper">
+					<Header />
+					<main className="main-content">
+						<div className="content-box">
+							<Outlet />
+						</div>
+					</main>
+					<div className="mt-auto">
+						<Footer />
+					</div>
+				</div>
+			</div>
+		</ThemeProvider>
+	)
 }
 
 export default App

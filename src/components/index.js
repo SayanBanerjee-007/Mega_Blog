@@ -12,20 +12,26 @@ import PostCard from './PostCard'
 import AuthLayout from './AuthLayout'
 import Input from './Input'
 import Select from './Select'
+import ThemeToggle from './ThemeToggle'
+import LoadingScreen from './LoadingScreen'
+import SearchAndFilter from './SearchAndFilter'
 
 export {
-  Select,
-  Header,
-  Footer,
-  Container,
-  Logo,
-  LogoutButton,
-  Button,
-  RTE,
-  Signup,
-  Login,
-  PostForm,
-  PostCard,
-  AuthLayout,
-  Input,
+	Select,
+	Header,
+	Footer,
+	Container,
+	Logo,
+	LogoutButton,
+	Button,
+	RTE,
+	Signup,
+	Login,
+	PostForm,
+	PostCard,
+	AuthLayout,
+	Input,
+	ThemeToggle,
+	LoadingScreen,
+	SearchAndFilter,
 }
