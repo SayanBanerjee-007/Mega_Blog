@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import databaseService from '../appwrite/database'
-import storageService from '../appwrite/storage'
+import { databaseService, storageService } from '../services'
 import { Button, Container } from '../components'
 import parse from 'html-react-parser'
 import { useSelector } from 'react-redux'
@@ -42,15 +41,25 @@ export default function Post() {
 				<img
 					src={storageService.getImageView(post.featuredImage)}
 					alt={post.title}
-					className="w-full h-96 object-cover transition-transform duration-500 group-hover:scale-105"
+					className="w-full h-96 object-cover transition-transform duration-500"
 				/>
 				<div className="absolute bottom-6 left-6 right-6 z-20 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-4 group-hover:translate-y-0">
 					<h1 className="text-4xl font-bold text-white mb-2 drop-shadow-lg">
 						{post.title}
 					</h1>
 					<div className="flex items-center text-white/80 text-sm">
-						<div className="w-2 h-2 bg-blue-400 rounded-full mr-2 animate-pulse"></div>
-						<span>Published Article</span>
+						<div
+							className={`w-2 h-2 rounded-full mr-2 ${
+								post.status === 'active'
+									? 'bg-blue-400'
+									: 'bg-yellow-400'
+							}`}
+						></div>
+						<span>
+							{post.status === 'active'
+								? 'Published Article'
+								: 'Draft Article'}
+						</span>
 					</div>
 				</div>
 			</div>
@@ -65,9 +74,17 @@ export default function Post() {
 							{post.title}
 						</h1>
 						<div className="flex items-center text-slate-600 dark:text-slate-400">
-							<div className="w-2 h-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mr-3 animate-pulse"></div>
+							<div
+								className={`w-2 h-2 rounded-full mr-3 ${
+									post.status === 'active'
+										? 'bg-gradient-to-r from-blue-500 to-purple-500'
+										: 'bg-gradient-to-r from-yellow-500 to-orange-500'
+								}`}
+							></div>
 							<span className="text-sm font-medium">
-								Featured Article
+								{post.status === 'active'
+									? 'Featured Article'
+									: 'Draft Article'}
 							</span>
 						</div>
 					</div>
@@ -86,7 +103,7 @@ export default function Post() {
 					{isAuthor && (
 						<div className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-slate-200/50 dark:border-slate-700/50 mb-6">
 							<h3 className="text-lg font-semibold text-slate-800 dark:text-white mb-4 flex items-center">
-								<div className="w-2 h-2 bg-gradient-to-r from-green-400 to-blue-400 rounded-full mr-2 animate-pulse"></div>
+								<div className="w-2 h-2 bg-gradient-to-r from-green-400 to-blue-400 rounded-full mr-2"></div>
 								Author Actions
 							</h3>
 							<div className="space-y-3">
@@ -96,14 +113,14 @@ export default function Post() {
 								>
 									<Button
 										bgColor="bg-gradient-to-r from-green-500 to-emerald-500"
-										className="w-full hover:from-green-600 hover:to-emerald-600 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl text-white font-medium py-3"
+										className="w-full hover:from-green-600 hover:to-emerald-600 transition-all duration-200 shadow-lg text-white font-medium py-3"
 									>
 										✏️ Edit Post
 									</Button>
 								</Link>
 								<Button
 									bgColor="bg-gradient-to-r from-red-500 to-pink-500"
-									className="w-full hover:from-red-600 hover:to-pink-600 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl text-white font-medium py-3"
+									className="w-full hover:from-red-600 hover:to-pink-600 transition-all duration-200 shadow-lg text-white font-medium py-3"
 									onClick={deletePost}
 								>
 									🗑️ Delete Post
@@ -115,7 +132,7 @@ export default function Post() {
 					{/* Article Info */}
 					<div className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-slate-200/50 dark:border-slate-700/50">
 						<h3 className="text-lg font-semibold text-slate-800 dark:text-white mb-4 flex items-center">
-							<div className="w-2 h-2 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full mr-2 animate-pulse"></div>
+							<div className="w-2 h-2 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full mr-2"></div>
 							Article Info
 						</h3>
 						<div className="space-y-3 text-sm">
@@ -123,9 +140,21 @@ export default function Post() {
 								<span className="text-slate-600 dark:text-slate-400">
 									Status
 								</span>
-								<span className="text-green-600 dark:text-green-400 font-medium flex items-center">
-									<div className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></div>
-									Published
+								<span
+									className={`font-medium flex items-center ${
+										post.status === 'active'
+											? 'text-green-600 dark:text-green-400'
+											: 'text-red-600 dark:text-red-400'
+									}`}
+								>
+									<div
+										className={`w-2 h-2 rounded-full mr-2 ${
+											post.status === 'active'
+												? 'bg-green-400'
+												: 'bg-red-400'
+										}`}
+									></div>
+									{post.status === 'active' ? 'Published' : 'Draft'}
 								</span>
 							</div>
 							<div className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg">

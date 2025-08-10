@@ -1,43 +1,28 @@
-import { useState } from 'react'
-import { useDispatch } from 'react-redux'
-import authService from './appwrite/auth'
-import { useEffect } from 'react'
-import { login, logout } from './store/authSlice'
-import { Header, Footer } from './components'
+import { Header } from './components'
 import { Outlet } from 'react-router-dom'
-import { ThemeProvider } from './contexts/ThemeContext'
+import { ThemeProvider } from './contexts'
+import { useAuthInit } from './hooks'
 
 function App() {
-	const dispatch = useDispatch()
-
-	useEffect(() => {
-		authService.getCurrentUser().then(userData => {
-			if (userData) {
-				dispatch(login({ userData }))
-			} else {
-				dispatch(logout())
-			}
-		})
-	}, [])
+	useAuthInit()
 
 	return (
 		<ThemeProvider>
-			<div className="main-container">
+			<div className="main-container overflow-x-hidden">
+				{/* Background decorative elements */}
 				<div className="bg-decoration">
 					<div className="bg-blob-1"></div>
 					<div className="bg-blob-2"></div>
 				</div>
 
+				{/* Main content */}
 				<div className="content-wrapper">
 					<Header />
-					<main className="main-content">
+					<main className="main-content pb-20 md:pb-2">
 						<div className="content-box">
 							<Outlet />
 						</div>
 					</main>
-					<div className="mt-auto">
-						<Footer />
-					</div>
 				</div>
 			</div>
 		</ThemeProvider>

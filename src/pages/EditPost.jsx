@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Container, PostForm } from '../components'
-import databaseService from '../appwrite/database'
+import { databaseService } from '../services'
 import { useNavigate, useParams } from 'react-router-dom'
 
 function EditPost() {
@@ -19,6 +19,7 @@ function EditPost() {
 			navigate('/')
 		}
 	}, [slug, navigate])
+
 	return post ? (
 		<Container>
 			<div className="py-8">

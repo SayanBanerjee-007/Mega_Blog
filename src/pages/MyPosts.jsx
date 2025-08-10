@@ -1,6 +1,11 @@
 import { useState, useEffect, useCallback } from 'react'
-import { Container, PostCard, SearchAndFilter } from '../components'
-import databaseService from '../appwrite/database'
+import {
+	Container,
+	PostCard,
+	SearchAndFilter,
+	SkeletonLoader,
+} from '../components'
+import { databaseService } from '../services'
 import { Query } from 'appwrite'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
@@ -66,14 +71,17 @@ function AllPosts() {
 				setLoading(false)
 			}
 		},
-		[userData, offset, sortBy, statusFilter]
+		[userData, sortBy, statusFilter]
 	)
 
 	useEffect(() => {
 		if (userData) {
-			loadPosts()
+			setPosts([]) // Clear existing posts when filter changes
+			setOffset(0) // Reset offset
+			setHasMore(true) // Reset hasMore
+			loadPosts(false) // Load fresh data
 		}
-	}, [userData, sortBy, statusFilter])
+	}, [userData, sortBy, statusFilter, loadPosts])
 
 	// Filter posts based on search term
 	useEffect(() => {
@@ -111,19 +119,6 @@ function AllPosts() {
 		return () => window.removeEventListener('scroll', handleScroll)
 	}, [loading, hasMore, userData, loadPosts])
 
-	if (loading && posts.length === 0) {
-		return (
-			<Container>
-				<div className="text-center py-12">
-					<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
-					<p className="mt-4 text-slate-600 dark:text-slate-400">
-						Loading your posts...
-					</p>
-				</div>
-			</Container>
-		)
-	}
-
 	return (
 		<Container>
 			<div className="mb-8">
@@ -158,21 +153,24 @@ function AllPosts() {
 				<div className="h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full max-w-xs"></div>
 			</div>
 
-			{/* Search and Filter Component */}
+			{/* Search and Filter Component - Always visible */}
 			<SearchAndFilter
 				searchTerm={searchTerm}
 				onSearchChange={e => setSearchTerm(e.target.value)}
 				sortBy={sortBy}
 				onSortChange={e => setSortBy(e.target.value)}
 				statusFilter={statusFilter}
-				onStatusChange={e => setStatusFilter(e.target.value)}
+				onStatusChange={e => {
+					console.log('Status filter changed to:', e.target.value) // Debug log
+					setStatusFilter(e.target.value)
+				}}
 				placeholder="Search your posts by title or content..."
 				showStatusFilter={true}
 				searchResults={searchTerm ? filteredPosts.length : null}
 				onClearSearch={() => setSearchTerm('')}
 			/>
 
-			{/* Stats */}
+			{/* Stats - Always visible */}
 			<div className="mb-6">
 				<div className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-xl px-4 py-2 border border-slate-200 dark:border-slate-700 inline-block">
 					<span className="text-sm text-slate-600 dark:text-slate-400">
@@ -184,8 +182,12 @@ function AllPosts() {
 				</div>
 			</div>
 
-			{/* Posts Grid or Empty State */}
-			{filteredPosts.length === 0 && !loading ? (
+			{/* Posts Content Area */}
+			{loading && posts.length === 0 ? (
+				/* Initial loading state */
+				<SkeletonLoader count={8} />
+			) : filteredPosts.length === 0 && !loading ? (
+				/* Empty state */
 				<div className="text-center py-12">
 					<div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-6">
 						<svg
@@ -226,26 +228,15 @@ function AllPosts() {
 					)}
 				</div>
 			) : (
+				/* Posts grid */
 				<>
 					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
 						{filteredPosts.map(post => (
 							<div
 								key={post.$id}
-								className="transform hover:scale-105 transition-all duration-300 relative group"
+								className="transition-all duration-300 relative group"
 							>
 								<PostCard {...post} />
-								{/* Status indicator */}
-								<div className="absolute top-2 left-2 z-10">
-									<span
-										className={`px-2 py-1 text-xs font-medium rounded-full ${
-											post.status === 'active'
-												? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
-												: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
-										}`}
-									>
-										{post.status}
-									</span>
-								</div>
 								{/* Edit button */}
 								<Link
 									to={`/edit-post/${post.$id}`}
@@ -273,11 +264,12 @@ function AllPosts() {
 
 					{/* Loading indicator */}
 					{loading && (
-						<div className="text-center py-8">
-							<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
-							<p className="mt-2 text-slate-600 dark:text-slate-400">
-								Loading more posts...
-							</p>
+						<div className="py-8">
+							<div className="text-center">
+								<p className="text-slate-600 dark:text-slate-400 text-sm">
+									Loading more posts...
+								</p>
+							</div>
 						</div>
 					)}
 

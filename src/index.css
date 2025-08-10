@@ -14,11 +14,36 @@
 	}
 
 	.main-content {
-		@apply container mx-auto px-4 pt-6 pb-2;
+		@apply container mx-auto px-4 pt-6 pb-2 flex-1;
 	}
 
 	.content-box {
-		@apply bg-gray-200/70 dark:bg-slate-800/70 backdrop-blur-md rounded-2xl shadow-xl border border-white/20 dark:border-slate-700/50 p-6 transition-all duration-200;
+		@apply bg-gray-200/70 dark:bg-slate-800/70 backdrop-blur-md rounded-2xl shadow-xl border border-white/20 dark:border-slate-700/50 p-6 transition-all duration-200 min-h-[400px] flex flex-col;
+	}
+
+	/* Header Enhancement Classes */
+	.header-nav-item {
+		@apply relative px-4 py-2 text-white font-medium transition-all duration-200 hover:scale-105 rounded-lg border border-white/20 hover:border-white/40 backdrop-blur-sm bg-white/10 hover:bg-white/20 shadow-md hover:shadow-lg text-sm;
+	}
+
+	.header-mobile-toggle {
+		@apply p-2 text-white hover:bg-white/20 rounded-lg transition-colors duration-200;
+	}
+
+	.profile-avatar {
+		@apply w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white text-sm font-semibold shadow-lg;
+	}
+
+	.dropdown-menu {
+		@apply absolute right-0 mt-2 w-64 bg-white dark:bg-slate-800 rounded-xl shadow-2xl border border-gray-200 dark:border-slate-700 z-50 overflow-hidden;
+	}
+
+	.dropdown-item {
+		@apply w-full px-4 py-3 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors duration-150 flex items-center space-x-3;
+	}
+
+	.mobile-menu-panel {
+		@apply fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-white dark:bg-slate-800 shadow-2xl z-50 transform transition-transform duration-300;
 	}
 
 	/* Hero Section Classes */
@@ -87,11 +112,11 @@
 	}
 
 	.spinner-blue {
-		@apply absolute inset-0 w-20 h-20 border-4 border-transparent border-t-blue-500 dark:border-t-blue-400 rounded-full animate-spin;
+		@apply absolute inset-0 w-20 h-20 border-4 border-transparent border-t-blue-500 dark:border-t-blue-400 rounded-full;
 	}
 
 	.spinner-purple {
-		@apply absolute inset-0 w-20 h-20 border-4 border-transparent border-t-purple-500 dark:border-t-purple-400 rounded-full animate-spin;
+		@apply absolute inset-0 w-20 h-20 border-4 border-transparent border-t-purple-500 dark:border-t-purple-400 rounded-full;
 	}
 }
 
@@ -161,6 +186,18 @@
 
 .animation-delay-4000 {
 	animation-delay: 4s;
+}
+
+.animation-reverse {
+	animation-direction: reverse;
+}
+
+.animation-duration-1500 {
+	animation-duration: 1.5s;
+}
+
+.animation-delay-400 {
+	animation-delay: 0.4s;
 }
 
 /* Background Decorative Elements */
